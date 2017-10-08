@@ -1,8 +1,16 @@
 package data.Database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import data.DAO.ShoppingListDao;
 
 /**
  * Created by mxion on 9/21/2017.
@@ -32,5 +40,61 @@ public class dbhelper extends SQLiteOpenHelper {
         db.execSQL(DataSource.CREATE_LIST_TABLE);
         db.execSQL(DataSource.CREATE_ITEM_TABLE);
     }
+
+    public List<ShoppingListDao> getShoppingLis(Context context){
+        List<ShoppingListDao> shoppingListDaos= new ArrayList<ShoppingListDao>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT id,name,date FROM ShoppingList ", null);
+
+        if(c.moveToFirst()){
+            do{
+                ShoppingListDao shoppingListDao= new ShoppingListDao();
+
+                shoppingListDao.setId(c.getInt(0));
+                shoppingListDao.setName(c.getString(1));
+                shoppingListDao.setDate(new Date(c.getLong(2)));
+
+                shoppingListDaos.add(shoppingListDao);
+            }while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+
+        return shoppingListDaos;
+    }
+
+    public Boolean addShoppingList(ShoppingListDao shoppingListDao){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        boolean createSuccessful = false;
+
+        ContentValues values = new ContentValues();
+
+        values.put("Name", shoppingListDao.getName());
+        values.put("Date", shoppingListDao.getDate().getTime());
+
+        createSuccessful = db.insert("ShoppingList", null, values) > 0;
+        db.close();
+
+        return createSuccessful;
+    }
+
+    public void removeShoppingList(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete("ShoppingList", "Id=?", new String[]{Long.toString(id)});
+
+        db.close();
+    }
+
+    public void removeShoppingListItems(long listId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete("Item", "List_Id=?", new String[]{Long.toString(listId)});
+
+        db.close();
+    }
+
 }
 

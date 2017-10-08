@@ -6,7 +6,7 @@ package data.Database;
 
 public class DataSource {
 
-    public static String CREATE_LIST_TABLE ="CREATE TABLE ShopingList (" +
+    public static String CREATE_LIST_TABLE ="CREATE TABLE ShoppingList (" +
             " Id integer PRIMARY KEY," +
             " Name text NOT NULL," +
             " Date text NOT NULL)";
