@@ -1,4 +1,4 @@
-package data.Database;
+package com.example.min.myshopping_list.data.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,19 +10,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import data.DAO.ShoppingListDao;
+import com.example.min.myshopping_list.data.DAO.ShoppingListDao;
 
 /**
  * Created by mxion on 9/21/2017.
  */
 
-public class dbhelper extends SQLiteOpenHelper {
+public class DBhelper extends SQLiteOpenHelper {
 
 
     private static final int version = 1;
     private static final String database_name = "ShoppingList.db";
 
-    public dbhelper(Context context) {
+    public DBhelper(Context context) {
         super(context, database_name, null, version);
     }
 
@@ -41,7 +41,7 @@ public class dbhelper extends SQLiteOpenHelper {
         db.execSQL(DataSource.CREATE_ITEM_TABLE);
     }
 
-    public List<ShoppingListDao> getShoppingLis(Context context){
+    public List<ShoppingListDao> getShoppingLis(){
         List<ShoppingListDao> shoppingListDaos= new ArrayList<ShoppingListDao>();
 
         SQLiteDatabase db = this.getReadableDatabase();

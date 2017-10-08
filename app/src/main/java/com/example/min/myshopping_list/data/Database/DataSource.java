@@ -1,4 +1,4 @@
-package data.Database;
+package com.example.min.myshopping_list.data.Database;
 
 /**
  * Created by mxion on 9/21/2017.

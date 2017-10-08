@@ -1,4 +1,4 @@
-package data.DAO;
+package com.example.min.myshopping_list.data.DAO;
 
 /**
  * Created by mxion on 10/6/2017.

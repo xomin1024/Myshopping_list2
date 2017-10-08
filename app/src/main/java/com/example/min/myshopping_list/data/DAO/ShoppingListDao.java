@@ -1,4 +1,4 @@
-package data.DAO;
+package com.example.min.myshopping_list.data.DAO;
 
 import java.util.Date;
 
