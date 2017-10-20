@@ -1,19 +1,25 @@
 package com.example.min.myshopping_list.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+//import com.example.min.myshopping_list.
 import com.example.min.myshopping_list.R;
 import com.example.min.myshopping_list.data.DAO.ShoppingListDao;
 import com.example.min.myshopping_list.data.Database.DBhelper;
@@ -150,6 +156,8 @@ public class ShoppingListActivityFragment extends Fragment {
         private TextView listName;
         private Context mContext;
         private ShoppingListDao shoppingListDao;
+        private ImageButton moreButton;
+
 
 
         public ShoppingListViewHolder(View itemView, Context context) {
@@ -159,6 +167,66 @@ public class ShoppingListActivityFragment extends Fragment {
 
             listDate = (TextView) itemView.findViewById(R.id.list_date);
             listName = (TextView) itemView.findViewById(R.id.list_name);
+            moreButton = (ImageButton) itemView.findViewById(R.id.list_more);
+
+            moreButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    LayoutInflater A = LayoutInflater.from(mContext);
+                    View moreView = A.inflate(R.layout.moredialog,null);
+                    AlertDialog.Builder alerttDialogBuider = new AlertDialog.Builder(mContext);
+                    alerttDialogBuider.setView(moreView);
+                    //create show up cancel button
+                    alerttDialogBuider
+                            .setCancelable(true)
+                            .setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener(){
+                                        public  void onClick(DialogInterface dolog, int id) {
+                                            dolog.cancel();
+                                        }
+                                    });
+
+
+                    final AlertDialog alertDialog = alerttDialogBuider.create();
+                    alertDialog.show();
+
+                    Button delete = (Button) moreView.findViewById(R.id.button_delete);
+
+                    delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            android.app.AlertDialog.Builder aBuilder = new android.app.AlertDialog.Builder(mContext);
+                            String Alertmessage="You are about to delete this shoppinglist, continue?";
+
+                            aBuilder.setTitle("Alert")
+                                    .setMessage(Alertmessage)
+                                    .setCancelable(true)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            DBhelper DB = new DBhelper(mContext);
+                                            DB.removeShoppingList(shoppingListDao.getId());
+                                            dialog.cancel();
+                                            updateUI();
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                            ;
+                            android.app.AlertDialog ad = aBuilder.create();
+                            ad.show();
+                            alertDialog.cancel();
+                        }
+                    });
+
+
+                }
+            });
+
         }
 
         public void bindShoppingList(ShoppingListDao shoppingListDao) {
@@ -170,7 +238,7 @@ public class ShoppingListActivityFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            //more to be done
+            //more to be done, go to items list page
         }
     }
 }
