@@ -15,9 +15,9 @@ public class DataSource {
             " id integer PRIMARY KEY," +
             " List_Id integer NOT NULL," +
             " Name text NOT NULL,"+
-            "Store_Name text NOT NULL,"+
-            "Cross_off integer NOT NULL,"+
-            "Note text NOT NULL)";
+            "Store_Name text  NULL,"+
+            "Cross_off integer  NULL,"+
+            "Note text  NULL)";
 
     public static String DELETE_LIST_TABLE ="delete TABLE ShopingList";
     public static String DELETE_ITEM_TABLE ="delete TABLE Item";

@@ -104,11 +104,11 @@ public class DBhelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
 
-        values.put("ListId", itemDao.getListId());
+        values.put("List_Id", itemDao.getListId());
         values.put("Name", itemDao.getName());
-        values.put("StoreName", itemDao.getStoreName());
-        values.put("CrossOff", itemDao.isCrossOff()? 1:0);
-        values.put("NoteText", itemDao.getNoteText());
+        values.put("Store_Name", itemDao.getStoreName());
+        values.put("Cross_Off", itemDao.isCrossOff()? 1:0);
+        values.put("Note", itemDao.getNoteText());
 
         createSuccessful = db.insert("Item", null, values) > 0;
         db.close();
@@ -120,7 +120,7 @@ public class DBhelper extends SQLiteOpenHelper {
         List<ItemDao> itemDaos= new ArrayList<ItemDao>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT Id, ListId, Name, StoreName, CrossOff, NoteText  FROM Item where ListId = " + shopingListId, null);
+        Cursor c = db.rawQuery("SELECT Id, List_Id, Name, Store_Name, Cross_Off, Note  FROM Item where List_Id = " + shopingListId, null);
 
         if(c.moveToFirst()){
             do{
@@ -140,6 +140,14 @@ public class DBhelper extends SQLiteOpenHelper {
         db.close();
 
         return itemDaos;
+    }
+
+    public void removeItems(long Id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete("Item", "Id=?", new String[]{Long.toString(Id)});
+
+        db.close();
     }
 
 }
