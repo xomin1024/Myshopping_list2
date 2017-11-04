@@ -238,7 +238,8 @@ public class ShoppingListActivityFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            //more to be done, go to items list page
+            Intent intent = ItemActivity.newIntent(mContext, shoppingListDao.getId());
+            mContext.startActivity(intent);
         }
     }
 }

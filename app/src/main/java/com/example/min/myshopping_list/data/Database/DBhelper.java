@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.example.min.myshopping_list.data.DAO.ItemDao;
 import com.example.min.myshopping_list.data.DAO.ShoppingListDao;
 
 /**
@@ -94,6 +95,51 @@ public class DBhelper extends SQLiteOpenHelper {
         db.delete("Item", "List_Id=?", new String[]{Long.toString(listId)});
 
         db.close();
+    }
+
+    public Boolean addItem(ItemDao itemDao){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        boolean createSuccessful = false;
+
+        ContentValues values = new ContentValues();
+
+        values.put("ListId", itemDao.getListId());
+        values.put("Name", itemDao.getName());
+        values.put("StoreName", itemDao.getStoreName());
+        values.put("CrossOff", itemDao.isCrossOff()? 1:0);
+        values.put("NoteText", itemDao.getNoteText());
+
+        createSuccessful = db.insert("Item", null, values) > 0;
+        db.close();
+
+        return createSuccessful;
+    }
+
+    public List<ItemDao> getItems(int shopingListId){
+        List<ItemDao> itemDaos= new ArrayList<ItemDao>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT Id, ListId, Name, StoreName, CrossOff, NoteText  FROM Item where ListId = " + shopingListId, null);
+
+        if(c.moveToFirst()){
+            do{
+                ItemDao itemDao= new ItemDao();
+
+                itemDao.setId(c.getInt(0));
+                itemDao.setListId(c.getInt(1));
+                itemDao.setName(c.getString(2));
+                itemDao.setStoreName(c.getString(3));
+                itemDao.setCrossOff(c.getInt(4)==1);
+                itemDao.setNoteText(c.getString(5));
+
+                itemDaos.add(itemDao);
+            }while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+
+        return itemDaos;
     }
 
 }
