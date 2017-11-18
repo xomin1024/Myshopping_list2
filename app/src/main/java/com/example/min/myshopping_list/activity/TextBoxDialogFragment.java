@@ -88,3 +88,4 @@ public class TextBoxDialogFragment extends DialogFragment {
         getTargetFragment().onActivityResult(requestCode, 0, intent);
     }
 }
+

@@ -98,20 +98,24 @@ public class DBhelper extends SQLiteOpenHelper {
     }
 
     public Boolean addItem(ItemDao itemDao){
-        SQLiteDatabase db = this.getWritableDatabase();
-
         boolean createSuccessful = false;
 
-        ContentValues values = new ContentValues();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        values.put("List_Id", itemDao.getListId());
-        values.put("Name", itemDao.getName());
-        values.put("Store_Name", itemDao.getStoreName());
-        values.put("Cross_Off", itemDao.isCrossOff()? 1:0);
-        values.put("Note", itemDao.getNoteText());
+            ContentValues values = new ContentValues();
 
-        createSuccessful = db.insert("Item", null, values) > 0;
-        db.close();
+            values.put("List_Id", itemDao.getListId());
+            values.put("Name", itemDao.getName());
+            values.put("Store_Name", itemDao.getStoreName());
+            values.put("Cross_Off", itemDao.isCrossOff() ? 1 : 0);
+            values.put("Note", itemDao.getNoteText());
+
+            createSuccessful = db.insert("Item", null, values) > 0;
+            db.close();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
 
         return createSuccessful;
     }

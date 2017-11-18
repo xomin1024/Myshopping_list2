@@ -54,10 +54,6 @@ public class ShoppingListActivityFragment extends Fragment {
             dBhelper.addShoppingList(listDao);
             updateUI();
         }
-
-
-
-
     }
 
     @Override
