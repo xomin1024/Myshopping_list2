@@ -1,10 +1,12 @@
 package com.example.min.myshopping_list.data.Database;
 
+import android.app.LauncherActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -144,6 +146,33 @@ public class DBhelper extends SQLiteOpenHelper {
         db.close();
 
         return itemDaos;
+    }
+    public void updateItem(ItemDao itemDao){
+        try {
+            SQLiteDatabase wdb = this.getWritableDatabase();
+
+            ContentValues values = buildItemValues(itemDao);
+            String selection = "id = ?";
+            String[] selectionArgs = {Integer.toString(itemDao.getId())};
+
+            int count = wdb.update(
+                    "Item",
+                    values,
+                    selection,
+                    selectionArgs);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    private static ContentValues buildItemValues(ItemDao itemDao){
+        ContentValues values = new ContentValues();
+
+        values.put("Name", itemDao.getName());
+        values.put("Store_Name", itemDao.getStoreName());
+        values.put("Note", itemDao.getNoteText());
+        values.put("Cross_off", itemDao.isCrossOff()? 1:0);
+
+        return values;
     }
 
     public void removeItems(long Id) {

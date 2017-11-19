@@ -11,11 +11,14 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -165,8 +168,8 @@ public class ItemActivityFragment extends Fragment {
     private class ItemsViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
 
         private TextView itemName;
-        private TextView storeName;
-        private TextView note;
+        private EditText storeName;
+        private EditText note;
         private CheckBox crossOff;
 
         private Context mContext;
@@ -181,9 +184,49 @@ public class ItemActivityFragment extends Fragment {
             mContext = context;
 
             itemName = (TextView) itemView.findViewById(R.id.itemName);
-            storeName = (TextView) itemView.findViewById(R.id.storeName);
-            note = (TextView) itemView.findViewById(R.id.note);
+            storeName = (EditText) itemView.findViewById(R.id.storeName);
+            note = (EditText) itemView.findViewById(R.id.note);
             crossOff = (CheckBox) itemView.findViewById(R.id.crossoff);
+
+            storeName.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    DBhelper db = new DBhelper(mContext);
+                    itemDao.setStoreName(editable.toString());
+                    db.updateItem(itemDao);
+                }
+            });
+
+            note.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    DBhelper db = new DBhelper(mContext);
+                    itemDao.setNoteText(editable.toString());
+                    db.updateItem(itemDao);
+                }
+            });
+
+
 
             //moreButton = (ImageButton) itemView.findViewById(R.id.list_more);
 
