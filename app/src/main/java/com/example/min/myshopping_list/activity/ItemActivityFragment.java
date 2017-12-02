@@ -1,6 +1,5 @@
 package com.example.min.myshopping_list.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,18 +15,16 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.min.myshopping_list.R;
 import com.example.min.myshopping_list.data.DAO.ItemDao;
-import com.example.min.myshopping_list.data.DAO.ShoppingListDao;
 import com.example.min.myshopping_list.data.Database.DBhelper;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,13 +63,7 @@ public class ItemActivityFragment extends Fragment {
         }
     }
 
-//    public static ItemActivityFragment newInstance(int listId) {
-//        Bundle args = new Bundle();
-//        args.putSerializable(ARG_LIST_ID, listId);
-//        ItemActivityFragment fragment = new ItemActivityFragment();
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +76,7 @@ public class ItemActivityFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.Item_recycler_view);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //  dBhelper = new DBhelper(getContext());
+
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_item);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +108,7 @@ public class ItemActivityFragment extends Fragment {
             mItemAdapter = new ItemActivityFragment.ItemAdapter(mItemDaos, getActivity());
             mRecyclerView.setAdapter(mItemAdapter);
         }else{
-            mItemAdapter.setShoppingListDTOs(mItemDaos);
+            mItemAdapter.setItemListDTOs(mItemDaos);
             mItemAdapter.notifyDataSetChanged();
         }
 
@@ -159,13 +150,13 @@ public class ItemActivityFragment extends Fragment {
             return itemDaos.size();
         }
 
-        public void setShoppingListDTOs(List<ItemDao> shoppingListDaos) {
-            itemDaos = shoppingListDaos;
+        public void setItemListDTOs(List<ItemDao> itemDaoList) {
+            itemDaos = itemDaoList;
         }
     }
 
     //Innclass ViewHolder
-    private class ItemsViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
+    private class ItemsViewHolder extends RecyclerView.ViewHolder  {
 
         private TextView itemName;
         private EditText storeName;
@@ -174,19 +165,38 @@ public class ItemActivityFragment extends Fragment {
 
         private Context mContext;
         private ItemDao itemDao;
-        private ImageButton moreButton;
+        private ImageButton removeItem;
 
 
 
         public ItemsViewHolder(View itemView, Context context) {
             super(itemView);
-            itemView.setOnClickListener(this);
             mContext = context;
 
             itemName = (TextView) itemView.findViewById(R.id.itemName);
             storeName = (EditText) itemView.findViewById(R.id.storeName);
             note = (EditText) itemView.findViewById(R.id.note);
             crossOff = (CheckBox) itemView.findViewById(R.id.crossoff);
+            removeItem = (ImageButton)  itemView.findViewById(R.id.removeItem);
+
+            itemName.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    DBhelper db = new DBhelper(mContext);
+                    itemDao.setName(editable.toString());
+                    db.updateItem(itemDao);
+                }
+            });
 
             storeName.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -226,69 +236,45 @@ public class ItemActivityFragment extends Fragment {
                 }
             });
 
-
-
-            //moreButton = (ImageButton) itemView.findViewById(R.id.list_more);
-
-            /*
-            moreButton.setOnClickListener(new View.OnClickListener() {
+            crossOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View view) {
-                    LayoutInflater A = LayoutInflater.from(mContext);
-                    View moreView = A.inflate(R.layout.moredialog,null);
-                    AlertDialog.Builder alerttDialogBuider = new AlertDialog.Builder(mContext);
-                    alerttDialogBuider.setView(moreView);
-                    //create show up cancel button
-                    alerttDialogBuider
-                            .setCancelable(true)
-                            .setNegativeButton("Cancel",
-                                    new DialogInterface.OnClickListener(){
-                                        public  void onClick(DialogInterface dolog, int id) {
-                                            dolog.cancel();
-                                        }
-                                    });
-
-
-                    final AlertDialog alertDialog = alerttDialogBuider.create();
-                    alertDialog.show();
-
-                    Button delete = (Button) moreView.findViewById(R.id.button_delete);
-
-                    delete.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            android.app.AlertDialog.Builder aBuilder = new android.app.AlertDialog.Builder(mContext);
-                            String Alertmessage="You are about to delete this shoppinglist, continue?";
-
-                            aBuilder.setTitle("Alert")
-                                    .setMessage(Alertmessage)
-                                    .setCancelable(true)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            DBhelper DB = new DBhelper(mContext);
-                                            DB.removeShoppingList(itemDao.getId());
-                                            dialog.cancel();
-                                            updateUI();
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    })
-                            ;
-                            android.app.AlertDialog ad = aBuilder.create();
-                            ad.show();
-                            alertDialog.cancel();
-                        }
-                    });
-
-
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    DBhelper db = new DBhelper(mContext);
+                    itemDao.setCrossOff(b);
+                    db.updateItem(itemDao);
                 }
             });
-            */
+
+            removeItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    android.app.AlertDialog.Builder aBuilder = new android.app.AlertDialog.Builder(mContext);
+                    String Alertmessage="You are about to delete this Item, continue?";
+                    /*
+                    aBuilder.setTitle("Alert")
+                            .setMessage(Alertmessage)
+                            .setCancelable(true)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    DBhelper DB = new DBhelper(mContext);
+                                    DB.removeItems(itemDao.getId());
+                                    dialog.cancel();
+                                    updateUI();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    android.app.AlertDialog ad = aBuilder.create();
+                    ad.show();
+                    */
+                }
+            });
 
         }
 
@@ -298,13 +284,6 @@ public class ItemActivityFragment extends Fragment {
             itemName.setText(this.itemDao.getName());
             note.setText(this.itemDao.getNoteText());
             crossOff.setChecked(this.itemDao.isCrossOff());
-        }
-
-        @Override
-        public void onClick(View v) {
-
-           // Intent intent = ItemActivity.newIntent(mContext, itemDao.getId());
-           // mContext.startActivity(intent);
         }
     }
 

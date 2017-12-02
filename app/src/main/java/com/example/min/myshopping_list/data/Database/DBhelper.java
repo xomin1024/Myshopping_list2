@@ -183,5 +183,40 @@ public class DBhelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /*public boolean deleteItems(long Id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        boolean isDeleted = false;
+
+
+
+
+
+        try {
+            values.put("Name", itemDao.getName());
+            values.put("Store_Name", itemDao.getStoreName());
+            values.put("Note", itemDao.getNoteText());
+            values.put("Cross_off", itemDao.isCrossOff()? 1:0);
+
+
+            int count = wdb.update(
+                     "Item",
+                    values,
+                    selection,
+                    selectionArgs);
+
+
+            if (count > 0)
+                isDeleted = true;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            db.close();
+        }
+
+        return isDeleted;
+    }
+    */
+
+
 }
 
