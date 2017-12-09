@@ -1,5 +1,6 @@
 package com.example.min.myshopping_list.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -250,7 +251,7 @@ public class ItemActivityFragment extends Fragment {
                 public void onClick(View v) {
                     android.app.AlertDialog.Builder aBuilder = new android.app.AlertDialog.Builder(mContext);
                     String Alertmessage="You are about to delete this Item, continue?";
-                    /*
+
                     aBuilder.setTitle("Alert")
                             .setMessage(Alertmessage)
                             .setCancelable(true)
@@ -270,9 +271,8 @@ public class ItemActivityFragment extends Fragment {
                                 }
                             });
 
-                    android.app.AlertDialog ad = aBuilder.create();
+                    final AlertDialog ad = aBuilder.create();
                     ad.show();
-                    */
                 }
             });
 

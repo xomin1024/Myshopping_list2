@@ -105,13 +105,7 @@ public class DBhelper extends SQLiteOpenHelper {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
 
-            ContentValues values = new ContentValues();
-
-            values.put("List_Id", itemDao.getListId());
-            values.put("Name", itemDao.getName());
-            values.put("Store_Name", itemDao.getStoreName());
-            values.put("Cross_Off", itemDao.isCrossOff() ? 1 : 0);
-            values.put("Note", itemDao.getNoteText());
+            ContentValues values = buildItemValues(itemDao);
 
             createSuccessful = db.insert("Item", null, values) > 0;
             db.close();
@@ -167,6 +161,7 @@ public class DBhelper extends SQLiteOpenHelper {
     private static ContentValues buildItemValues(ItemDao itemDao){
         ContentValues values = new ContentValues();
 
+        values.put("List_Id", itemDao.getListId());
         values.put("Name", itemDao.getName());
         values.put("Store_Name", itemDao.getStoreName());
         values.put("Note", itemDao.getNoteText());
@@ -183,39 +178,7 @@ public class DBhelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    /*public boolean deleteItems(long Id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        boolean isDeleted = false;
 
-
-
-
-
-        try {
-            values.put("Name", itemDao.getName());
-            values.put("Store_Name", itemDao.getStoreName());
-            values.put("Note", itemDao.getNoteText());
-            values.put("Cross_off", itemDao.isCrossOff()? 1:0);
-
-
-            int count = wdb.update(
-                     "Item",
-                    values,
-                    selection,
-                    selectionArgs);
-
-
-            if (count > 0)
-                isDeleted = true;
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            db.close();
-        }
-
-        return isDeleted;
-    }
-    */
 
 
 }
